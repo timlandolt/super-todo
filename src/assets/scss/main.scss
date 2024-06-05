@@ -1,0 +1,25 @@
+@import "variables";
+
+@font-face {
+  font-family: "Kadwa";
+  src: url("/fonts/Kadwa/Kadwa-Regular.ttf");
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "Kadwa";
+  src: url("/fonts/Kadwa/Kadwa-Bold.ttf");
+  font-weight: bold;
+}
+
+body {
+  background-color: $color-light;
+  margin: 0;
+
+  .container {
+    height: 5rem;
+    border-radius: 10px;
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='10' ry='10' stroke='%23bdbcb7FF' stroke-width='8' stroke-dasharray='5%2c 20' stroke-linecap='square'/%3e%3c/svg%3e");
+    width: 40vw;
+  }
+}

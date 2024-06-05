@@ -1,0 +1,31 @@
+<script>
+import Logo from "@/components/Logo.vue";
+import ListContainer from "@/components/ListContainer.vue";
+import AddContainer from "@/components/AddContainer.vue";
+
+export default {
+  name: 'app',
+  components: {AddContainer, ListContainer, Logo},
+  created() {
+    document.title = "Super ToDo";
+  }
+}
+</script>
+
+<template>
+  <Logo/>
+  <main>
+    <ListContainer />
+    <AddContainer />
+  </main>
+</template>
+
+<style scoped lang="scss">
+@import "assets/scss/_variables.scss";
+
+main {
+  display: flex;
+  justify-content: center;
+  gap: 6rem;
+}
+</style>
