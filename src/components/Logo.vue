@@ -26,7 +26,6 @@ header {
   }
 
   h1 {
-    font-family: Kadwa, monospace;
     color: $color-dark;
     font-size: 4rem;
     margin: 0;
