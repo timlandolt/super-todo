@@ -1,12 +1,17 @@
 import './assets/scss/main.scss'
 
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 import App from './App.vue'
-import { useFavicon } from '@vueuse/core'
+import {useFavicon} from '@vueuse/core'
+import {createPinia} from "pinia";
 
-const app = createApp(App)
+const pinia = createPinia();
+
+const app = createApp(App);
+app.use(pinia);
+
 
 const icon = useFavicon();
 icon.value = 'super-todo-logo.svg';
 
-app.mount('#app')
+app.mount('#app');

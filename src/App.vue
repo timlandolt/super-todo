@@ -27,5 +27,11 @@ main {
   display: flex;
   justify-content: center;
   gap: 6rem;
+  margin-inline: 10%;
+
+  @media screen and (max-width: 1550px){
+    flex-direction: column;
+    align-items: center;
+  }
 }
 </style>
