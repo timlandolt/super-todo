@@ -28,4 +28,13 @@ body {
 * {
   font-size: 100%;
   font-family: Kadwa, monospace;
+
+  &:focus {
+    outline: $color-gray solid 2px !important;
+    transition: outline 100ms linear !important;
+  }
+}
+
+.invisible {
+  display: none;
 }

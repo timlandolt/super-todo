@@ -3,23 +3,26 @@
   <div class="container edit-container">
     <form id="edit-form" @submit.prevent="onTodoSubmit()">
       <div>
-        <input type="text" name="todo-title" v-model="todoTitleField" id="todo-title-input" class="underlined-input" placeholder="Todo Title">
+        <input type="text" name="todo-title" v-model="todoTitleField" id="todo-title-input" class="underlined-input"
+               placeholder="Todo Title">
         <input type="text" name="todo-creator" id="todo-creator-input" class="underlined-input" placeholder="Your Name">
       </div>
       <textarea name="todo-content" id="todo-content-input" rows="3"></textarea>
       <select name="todo-category" id="todo-category">
+        <option selected disabled class="invisible">Kategorie</option>
         <option value="helo">Helo</option>
+        <option value="world">World</option>
       </select>
       <div class="priority-wrapper">
         <div class="importance-wrapper">
           <label for="todo-importance-input">Wichtig</label>
-          <input type="checkbox" name="todo-importance" id="todo-importance-input">
+          <input type="checkbox" name="todo-importance" v-model="todoImportanceField" id="todo-importance-input">
         </div>
         <div class="urgency-wrapper">
           <label for="todo-urgency-input">Dringend</label>
-          <input type="checkbox" name="todo-urgency" id="todo-urgency-input">
+          <input type="checkbox" name="todo-urgency" v-model="todoUrgencyField" id="todo-urgency-input">
         </div>
-        <img src="../assets/img/arrow_long.svg" alt="">
+        <img src="../assets/img/arrow_short.svg" alt="">
         <p>{{ priorityText }}</p>
       </div>
       <div class="date-wrapper">
@@ -32,24 +35,33 @@
         <button id="add-button">Hinzufügen</button>
       </div>
     </form>
-    <h1>{{todoTitleField}}</h1>
+    <h1>{{ todoTitleField }}</h1>
   </div>
 </template>
 
 <script setup>
+import {getPriority, getPriorityColor, getPriorityText} from "@/priority.js";
+import {ref, watch} from "vue";
 
-let todoTitleField = '';
+const todoTitleField = ref('');
+const todoImportanceField = ref(false);
+const todoUrgencyField = ref(false);
 
-let priorityText = "Weg damit";
-let priorityColor = getPriorityColor(0, 0);
+const priority = ref(getPriority(todoImportanceField.value, todoUrgencyField.value));
+const priorityText = ref(getPriorityText(priority.value));
+const priorityTextColor = ref(getPriorityColor(priority.value));
+
+watch([todoImportanceField, todoUrgencyField], () => {
+  priority.value = getPriority(todoImportanceField.value, todoUrgencyField.value);
+  priorityText.value = getPriorityText(priority.value);
+  priorityTextColor.value = getPriorityColor(priority.value);
+});
+
 
 function onTodoSubmit() {
-  alert(todoTitleField);
+  alert(`"${todoUrgencyField}", "${todoImportanceField}"`);
 }
 
-function getPriorityColor(importance, urgency) {
-  return "#81B29A";
-}
 
 </script>
 
@@ -103,16 +115,77 @@ function getPriorityColor(importance, urgency) {
 
     }
 
+    select {
+      background-color: transparent;
+      border: none;
+      border-bottom: $color-dark 3px solid;
+      height: 2.2rem;
+
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: $color-dark;
+
+      cursor: pointer;
+
+      option {
+        cursor: pointer;
+        font-family: "Kadwa", monospace;
+        font-weight: normal;
+        background-color: $color-light;
+        border: none;
+        outline: none;
+
+        &:hover {
+          background-color: $color-light;
+          outline: $color-gray;
+        }
+      }
+    }
+
     .priority-wrapper {
       display: flex;
       flex-direction: row;
+      gap: 1.2rem;
+      align-items: center;
+
+      font-size: 1.5rem;
+
+      .importance-wrapper, .urgency-wrapper {
+
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+
+        input[type="checkbox"] {
+          appearance: none;
+          border: 3px solid $color-dark;
+          border-radius: 2px;
+          width: 1.2rem;
+          height: 1.2rem;
+
+          &:checked {
+            background-color: $color-dark;
+            background-image: url("../assets/img/check_small.svg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: bottom;
+          }
+        }
+      }
 
       p {
-        margin: 0;
         width: fit-content;
+        height: 1.7rem;
+        line-height: 1.8rem;
+        margin: 0;
         display: inline;
+        color: v-bind(priorityTextColor);
+        text-wrap: avoid;
+        word-wrap: anywhere;
+        hyphens: auto;
       }
     }
+
   }
 }
 </style>

@@ -8,6 +8,7 @@ export default {
   components: {AddContainer, ListContainer, Logo},
   created() {
     document.title = "Super ToDo";
+    document.getElementsByTagName("html")[0].lang = "de";
   }
 }
 </script>
