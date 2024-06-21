@@ -2,8 +2,8 @@
   <div class="container list-container">
     <div class="list-head">
       <form id="search-form">
-        <input type="search" name="search" id="todo-search" placeholder="Search To-dos...">
-        <button type="submit" id="search-button"></button>
+        <input type="search" name="search" id="todo-search" class="focus-default" placeholder="Search To-dos...">
+        <button type="submit" id="search-button" class="focus-default"></button>
       </form>
       <p class="completed-percentage">{{ completedPercentage }}%</p>
     </div>
@@ -61,11 +61,6 @@ function getColor(completedPercentage) {
         padding-top: 5px;
         height: 2.2rem;
 
-
-        &:focus {
-          outline: $color-gray solid 2px;
-          transition: outline 100ms linear;
-        }
 
         &::placeholder {
           color: $color-gray;

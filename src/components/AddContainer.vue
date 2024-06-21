@@ -7,7 +7,7 @@
                placeholder="Todo Title">
         <input type="text" name="todo-creator" id="todo-creator-input" class="underlined-input" placeholder="Your Name">
       </div>
-      <textarea name="todo-content" id="todo-content-input" rows="3"></textarea>
+      <textarea name="todo-content" id="todo-content-input" class="focus-default" rows="3"></textarea>
       <select name="todo-category" id="todo-category">
         <option selected disabled class="invisible">Kategorie</option>
         <option value="helo">Helo</option>
@@ -22,31 +22,36 @@
           <label for="todo-urgency-input">Dringend</label>
           <input type="checkbox" name="todo-urgency" v-model="todoUrgencyField" id="todo-urgency-input">
         </div>
-        <img src="../assets/img/arrow_short.svg" alt="">
+        <img src="../assets/img/arrow_short.svg" alt="" draggable="false">
         <p>{{ priorityText }}</p>
       </div>
       <div class="date-wrapper">
-        <input type="date" name="todo-start-date" id="todo-start-date-input">
-        <img src="../assets/img/arrow_short.svg" alt="">
-        <input type="date" name="todo-end-date" id="todo-end-date-input">
+        <input type="date" name="todo-start-date" v-model="todoStartDateField" id="todo-start-date-input"
+               class="underlined-input">
+        <img src="../assets/img/arrow_short.svg" alt="" draggable="false">
+        <input type="date" name="todo-end-date" v-model="todoEndDateField" id="todo-end-date-input"
+               class="underlined-input"
+               :class="{'illegal-date': !isLegalDate}">
       </div>
       <div class="button-wrapper">
         <button id="cancel-button">Abbrechen</button>
         <button id="add-button">Hinzufügen</button>
       </div>
     </form>
-    <h1>{{ todoTitleField }}</h1>
   </div>
 </template>
 
 <script setup>
 import {getPriority, getPriorityColor, getPriorityText} from "@/priority.js";
-import {ref, watch} from "vue";
+import {ref, watch, reactive} from "vue";
 
 const todoTitleField = ref('');
 const todoImportanceField = ref(false);
 const todoUrgencyField = ref(false);
+let todoStartDateField = ref('');
+let todoEndDateField = ref('');
 
+// Priority
 const priority = ref(getPriority(todoImportanceField.value, todoUrgencyField.value));
 const priorityText = ref(getPriorityText(priority.value));
 const priorityTextColor = ref(getPriorityColor(priority.value));
@@ -57,12 +62,21 @@ watch([todoImportanceField, todoUrgencyField], () => {
   priorityTextColor.value = getPriorityColor(priority.value);
 });
 
+// Date
+const isLegalDate = ref(true);
+watch([todoStartDateField, todoEndDateField], () => {
+  let convertedStartDate = Date.parse(todoStartDateField.value);
+  let convertedEndDate = Date.parse(todoEndDateField.value);
+  isLegalDate.value = checkDateLegality(convertedStartDate, convertedEndDate);
+});
 
-function onTodoSubmit() {
-  alert(`"${todoUrgencyField}", "${todoImportanceField}"`);
+function checkDateLegality(startDate, endDate) {
+  return isNaN(endDate) ? true : endDate >= startDate;
 }
 
-
+function onTodoSubmit() {
+  console.log("ToDo added!")
+}
 </script>
 
 <style scoped lang="scss">
@@ -108,7 +122,10 @@ function onTodoSubmit() {
       background-color: transparent;
       outline: none;
       resize: none;
-      width: 100%;
+      width: calc(100% - 2rem);
+      padding: .6rem;
+      font-size: 1.2rem;
+      line-height: 1.4rem;
 
       border: 4px solid $accent-yellow;
       border-radius: 5px;
@@ -123,7 +140,6 @@ function onTodoSubmit() {
 
       font-size: 1.2rem;
       font-weight: bold;
-      color: $color-dark;
 
       cursor: pointer;
 
@@ -186,6 +202,32 @@ function onTodoSubmit() {
       }
     }
 
+    .date-wrapper {
+      display: flex;
+      flex-direction: row;
+      gap: 1.2rem;
+      align-items: center;
+
+      input[type="date"] {
+        appearance: none;
+        background-color: transparent;
+        outline: none;
+        height: 2rem;
+        font-size: 1.2rem;
+
+        cursor: text;
+      }
+
+      #todo-end-date-input {
+        opacity: 0.3;
+      }
+
+      .illegal-date {
+        opacity: 1 !important;
+        border-bottom: $accent-red 3px solid !important;
+        color: $accent-red;
+      }
+    }
   }
 }
 </style>
