@@ -5,11 +5,13 @@
       <div>
         <input type="text" name="todo-title" v-model="todoTitleField" id="todo-title-input" class="underlined-input"
                placeholder="Todo Title">
-        <input type="text" name="todo-creator" id="todo-creator-input" class="underlined-input" placeholder="Your Name">
+        <input type="text" name="todo-creator" v-model="todoCreatorField" id="todo-creator-input"
+               class="underlined-input" placeholder="Your Name">
       </div>
-      <textarea name="todo-content" id="todo-content-input" class="focus-default" rows="3"></textarea>
-      <select name="todo-category" id="todo-category">
-        <option selected disabled class="invisible">Kategorie</option>
+      <textarea name="todo-content" v-model="todoContentField" id="todo-content-input" class="focus-default"
+                rows="3"></textarea>
+      <select name="todo-category" v-model="todoCategoryField" id="todo-category">
+        <option selected disabled class="invisible" value="">Kategorie</option>
         <option value="helo">Helo</option>
         <option value="world">World</option>
       </select>
@@ -34,7 +36,7 @@
                :class="{'illegal-date': !isLegalDate}">
       </div>
       <div class="button-wrapper">
-        <button id="cancel-button">Abbrechen</button>
+        <button id="cancel-button" @click="clearTodoForm()">Abbrechen</button>
         <button id="add-button">Hinzufügen</button>
       </div>
     </form>
@@ -46,10 +48,13 @@ import {getPriority, getPriorityColor, getPriorityText} from "@/priority.js";
 import {ref, watch, reactive} from "vue";
 
 const todoTitleField = ref('');
+const todoCreatorField = ref('');
+const todoContentField = ref('');
+const todoCategoryField = ref('');
 const todoImportanceField = ref(false);
 const todoUrgencyField = ref(false);
-let todoStartDateField = ref('');
-let todoEndDateField = ref('');
+const todoStartDateField = ref('');
+const todoEndDateField = ref('');
 
 // Priority
 const priority = ref(getPriority(todoImportanceField.value, todoUrgencyField.value));
@@ -65,9 +70,9 @@ watch([todoImportanceField, todoUrgencyField], () => {
 // Date
 const isLegalDate = ref(true);
 watch([todoStartDateField, todoEndDateField], () => {
-  let convertedStartDate = Date.parse(todoStartDateField.value);
-  let convertedEndDate = Date.parse(todoEndDateField.value);
-  isLegalDate.value = checkDateLegality(convertedStartDate, convertedEndDate);
+  let startDate = Date.parse(todoStartDateField.value);
+  let endDate = Date.parse(todoEndDateField.value);
+  isLegalDate.value = checkDateLegality(startDate, endDate);
 });
 
 function checkDateLegality(startDate, endDate) {
@@ -77,6 +82,17 @@ function checkDateLegality(startDate, endDate) {
 function onTodoSubmit() {
   console.log("ToDo added!")
 }
+
+function clearTodoForm() {
+  todoTitleField.value = '';
+  todoCreatorField.value = '';
+  todoContentField.value = '';
+  todoCategoryField.value = '';
+  todoImportanceField.value = false;
+  todoUrgencyField.value = false;
+  todoStartDateField.value = '';
+  todoEndDateField.value = '';
+}
 </script>
 
 <style scoped lang="scss">
@@ -84,6 +100,10 @@ function onTodoSubmit() {
 
 .edit-container {
   #edit-form {
+    display: flex;
+    flex-direction: column;
+
+    height: calc(100vh - 15rem);
 
     .underlined-input {
       margin: 0;
@@ -103,7 +123,6 @@ function onTodoSubmit() {
       display: flex;
       justify-content: space-between;
       align-items: end;
-      margin-bottom: 1rem;
 
       #todo-title-input {
         font-size: 4rem;
@@ -124,6 +143,7 @@ function onTodoSubmit() {
       resize: none;
       width: calc(100% - 2rem);
       padding: .6rem;
+      margin-block: 1rem;
       font-size: 1.2rem;
       line-height: 1.4rem;
 
@@ -136,6 +156,7 @@ function onTodoSubmit() {
       background-color: transparent;
       border: none;
       border-bottom: $color-dark 3px solid;
+      width: fit-content;
       height: 2.2rem;
 
       font-size: 1.2rem;
@@ -159,6 +180,8 @@ function onTodoSubmit() {
     }
 
     .priority-wrapper {
+      margin-block: 2rem 4rem;
+      
       display: flex;
       flex-direction: row;
       gap: 1.2rem;
@@ -226,6 +249,32 @@ function onTodoSubmit() {
         opacity: 1 !important;
         border-bottom: $accent-red 3px solid !important;
         color: $accent-red;
+      }
+    }
+
+    .button-wrapper {
+      margin-block: auto 2rem;
+
+      display: flex;
+      justify-content: space-between;
+
+      button {
+        padding: 0;
+        appearance: none;
+        background-color: transparent;
+        border: none;
+        font-size: 1.5rem;
+        line-height: 1.5rem;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      #cancel-button {
+        color: $accent-red;
+      }
+
+      #add-button {
+        color: $accent-green;
       }
     }
   }
