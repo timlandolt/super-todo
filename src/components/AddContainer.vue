@@ -49,6 +49,9 @@
 <script setup>
 import {getPriority, getPriorityColor, getPriorityText} from "@/priority.js";
 import {ref, watch, reactive} from "vue";
+import {useTodoListStore} from "@/stores/todo-list.js";
+
+const todoListStore = useTodoListStore();
 
 const todoTitleField = ref('');
 const todoCreatorField = ref('');
@@ -79,7 +82,23 @@ watch([todoStartDateField, todoEndDateField], () => {
 });
 
 function onTodoSubmit() {
-  alert("Yay!")
+  addTodoFromCurrentInputBinds();
+  clearTodoForm();
+}
+
+function addTodoFromCurrentInputBinds() {
+  todoListStore.addTodo(
+      {
+        title: todoTitleField.value.trim(),
+        creator: todoCreatorField.value.trim(),
+        content: todoContentField.value.trim(),
+        category: todoCategoryField.value.trim(),
+        priority: priority.value,
+        start: todoStartDateField.value,
+        end: todoEndDateField.value,
+        completed: false,
+      }
+  );
 }
 
 function checkDateLegality(startDate, endDate) {

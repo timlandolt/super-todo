@@ -5,34 +5,36 @@
         <input type="search" name="search" id="todo-search" class="focus-default" placeholder="Search To-dos...">
         <button type="submit" id="search-button" class="focus-default"></button>
       </form>
-      <p class="completed-percentage">{{ completedPercentage }}%</p>
+      <p class="completed-percentage">{{ todoListStore.completedPercentage }}%</p>
     </div>
-    <p>{{ todoList }}</p>
+    <p>{{ todoListStore.todoList }}</p>
   </div>
 </template>
 
 <script setup>
 
 import {useTodoListStore} from "@/stores/todo-list.js";
+import {Color} from "@/priority.js";
+import {ref, watch} from "vue";
 
 const todoListStore = useTodoListStore();
-const todoList = todoListStore.todoList;
 
-let completedPercentage = 80;
-let color = getColor(completedPercentage);
+let completedPercentage = todoListStore.completedPercentage;
+let color = ref(getColor(completedPercentage));
+
+watch([todoListStore.todoList], () => {
+  color.value = getColor(completedPercentage);
+});
 
 
 function getColor(completedPercentage) {
-  const redAccent = "#E07A5F";
-  const yellowAccent = "#F2CC8F";
-  const greenAccent = "#81B29A";
 
   if (completedPercentage < 33.33) {
-    return redAccent;
+    return Color.Accent.RED;
   } else if (completedPercentage < 66.66) {
-    return yellowAccent;
+    return Color.Accent.YELLOW;
   } else {
-    return greenAccent;
+    return Color.Accent.GREEN;
   }
 }
 </script>
