@@ -4,14 +4,14 @@
     <form id="edit-form" @submit.prevent="onTodoSubmit()">
       <div>
         <input type="text" name="todo-title" v-model="todoTitleField" id="todo-title-input" class="underlined-input"
-               placeholder="Todo Title">
+               placeholder="Todo Title*" required>
         <input type="text" name="todo-creator" v-model="todoCreatorField" id="todo-creator-input"
                class="underlined-input" placeholder="Your Name">
       </div>
       <textarea name="todo-content" v-model="todoContentField" id="todo-content-input" class="focus-default"
                 rows="3"></textarea>
-      <select name="todo-category" v-model="todoCategoryField" id="todo-category">
-        <option selected disabled class="invisible" value="">Kategorie</option>
+      <select name="todo-category" v-model="todoCategoryField" id="todo-category" required>
+        <option selected disabled class="invisible" value="">Kategorie *</option>
         <option value="helo">Helo</option>
         <option value="world">World</option>
       </select>
@@ -28,15 +28,18 @@
         <p>{{ priorityText }}</p>
       </div>
       <div class="date-wrapper">
+        <span id="start-date-wrapper">
         <input type="date" name="todo-start-date" v-model="todoStartDateField" id="todo-start-date-input"
-               class="underlined-input">
+               class="underlined-input" required>*</span>
         <img src="../assets/img/arrow_short.svg" alt="" draggable="false">
         <input type="date" name="todo-end-date" v-model="todoEndDateField" id="todo-end-date-input"
                class="underlined-input"
                :class="{'illegal-date': !isLegalDate}">
       </div>
+
+      <p>* zwingend benötigt</p>
       <div class="button-wrapper">
-        <button id="cancel-button" @click="clearTodoForm()">Abbrechen</button>
+        <button id="cancel-button" @click="clearTodoForm">Abbrechen</button>
         <button id="add-button">Hinzufügen</button>
       </div>
     </form>
@@ -75,12 +78,12 @@ watch([todoStartDateField, todoEndDateField], () => {
   isLegalDate.value = checkDateLegality(startDate, endDate);
 });
 
-function checkDateLegality(startDate, endDate) {
-  return isNaN(endDate) ? true : endDate >= startDate;
+function onTodoSubmit() {
+  alert("Yay!")
 }
 
-function onTodoSubmit() {
-  console.log("ToDo added!")
+function checkDateLegality(startDate, endDate) {
+  return isNaN(endDate) ? true : endDate >= startDate;
 }
 
 function clearTodoForm() {
@@ -99,6 +102,8 @@ function clearTodoForm() {
 @import "../assets/scss/_variables.scss";
 
 .edit-container {
+  overflow: scroll;
+
   #edit-form {
     display: flex;
     flex-direction: column;
@@ -125,15 +130,15 @@ function clearTodoForm() {
       align-items: end;
 
       #todo-title-input {
-        font-size: 4rem;
-        height: 4rem;
-        width: min(20rem, 60%);
+        font-size: 3rem;
+        height: 3rem;
+        width: min(22rem, 70%);
       }
 
       #todo-creator-input {
         font-size: 1.5rem;
         height: 1.5rem;
-        width: min(10rem, 40%);
+        width: min(10rem, 30%);
       }
     }
 
@@ -181,7 +186,7 @@ function clearTodoForm() {
 
     .priority-wrapper {
       margin-block: 2rem 4rem;
-      
+
       display: flex;
       flex-direction: row;
       gap: 1.2rem;
@@ -248,7 +253,7 @@ function clearTodoForm() {
       .illegal-date {
         opacity: 1 !important;
         border-bottom: $accent-red 3px solid !important;
-        color: $accent-red;
+        color: $accent-red !important;
       }
     }
 
