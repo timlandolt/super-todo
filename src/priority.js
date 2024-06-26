@@ -5,6 +5,19 @@ export function getPriority(important, urgent) {
     if (!important && !urgent) return Priority.WEG_DAMIT;
 }
 
+export function resolvePriority(priority) {
+    switch (priority) {
+        case Priority.SOFORT_ERLEDIGEN:
+            return {important: true, urgent: true};
+        case Priority.EINPLANEN_UND_WOHLFUEHLEN:
+            return {important: true, urgent: false};
+        case Priority.GIB_ES_AB:
+            return {important: false, urgent: true};
+        default:
+            return {important: false, urgent: false};
+    }
+}
+
 export function getPriorityText(priority) {
 
     switch (priority) {

@@ -50,7 +50,7 @@
 </template>
 
 <script setup>
-import {getPriority, getPriorityColor, getPriorityText} from "@/priority.js";
+import {getPriority, getPriorityColor, getPriorityText, resolvePriority} from "@/priority.js";
 import {ref, watch, reactive, inject, onMounted} from "vue";
 import {useTodoListStore} from "@/stores/todo-list.js";
 
@@ -91,7 +91,19 @@ watch([todoStartDateField, todoEndDateField], () => {
 });
 
 function loadEditTodo(id) {
-  console.log("Edit Todo: " + id);
+  const todo = todoListStore.todoList.filter(todo => todo.id === id)[0];
+  const priority = resolvePriority(todo.priority);
+
+  todoTitleField.value = todo.title;
+  todoCreatorField.value = todo.creator;
+  todoContentField.value = todo.content;
+  todoCategoryField.value = todo.category;
+  todoImportanceField.value = priority.important;
+  todoUrgencyField.value = priority.urgent;
+  todoStartDateField.value = todo.start;
+  todoEndDateField.value = todo.end;
+
+  todoListStore.deleteTodo(id);
 }
 
 function onTodoSubmit() {
@@ -102,13 +114,13 @@ function onTodoSubmit() {
 function addTodoFromCurrentInputBinds() {
   todoListStore.addTodo(
       {
-        title: todoTitleField.value.trim(),
-        creator: todoCreatorField.value.trim(),
-        content: todoContentField.value.trim(),
-        category: todoCategoryField.value.trim(),
+        title: todoTitleField.value ? todoTitleField.value.trim() : "",
+        creator: todoCreatorField.value ? todoCreatorField.value.trim() : "",
+        content: todoContentField.value ? todoContentField.value.trim() : "",
+        category: todoCategoryField.value ? todoCategoryField.value.trim() : "",
         priority: priority.value,
-        start: todoStartDateField.value,
-        end: todoEndDateField.value,
+        start: todoStartDateField.value ? todoStartDateField.value : "",
+        end: todoEndDateField.value ? todoEndDateField.value : "",
         completed: false,
       }
   );
@@ -129,8 +141,9 @@ function clearTodoForm() {
   todoEndDateField.value = '';
 }
 
+
 defineExpose({
-    loadEditTodo,
+  loadEditTodo,
 });
 </script>
 

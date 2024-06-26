@@ -2,7 +2,23 @@ import {defineStore} from 'pinia';
 import {computed, ref, watch} from 'vue';
 
 export const useTodoListStore = defineStore('todoList', () => {
-    const todoList = ref([]);
+    const todoList = ref([
+        {
+            id: 1,
+            title: "Title 1",
+            category: "Arbeit",
+            priority: "1",
+            start: "2024-11-02",
+            completed: false,
+        },
+        {
+            id: 2,
+            title: "Title 2",
+            category: "Sport",
+            priority: "3",
+            start: "2024-11-11",
+            completed: false,
+        },]);
 
     const completedPercentage = computed(() => {
         const absoluteCompletedValue = todoList.value.filter(todo => todo.completed).length;
