@@ -4,12 +4,12 @@
     <form id="edit-form" @submit.prevent="onTodoSubmit()">
       <div>
         <input type="text" name="todo-title" v-model="todoTitleField" id="todo-title-input" class="underlined-input"
-               placeholder="Todo Title*" required>
+               placeholder="To-do Title*" required>
         <input type="text" name="todo-creator" v-model="todoCreatorField" id="todo-creator-input"
                class="underlined-input" placeholder="Your Name">
       </div>
       <textarea name="todo-content" v-model="todoContentField" id="todo-content-input" class="focus-default"
-                rows="3"></textarea>
+                rows="3"/>
       <select name="todo-category" v-model="todoCategoryField" id="todo-category" required>
         <option selected disabled class="invisible" value="">Kategorie *</option>
         <option value="Arbeit">Arbeit</option>

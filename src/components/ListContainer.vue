@@ -1,24 +1,33 @@
 <template>
   <div class="container list-container">
     <div class="list-head">
-      <form id="search-form">
-        <input type="search" name="search" id="todo-search" class="focus-default" placeholder="Search To-dos...">
-        <button type="submit" id="search-button" class="focus-default"></button>
-      </form>
+      <div class="search-form">
+        <img src="../assets/img/search.svg" alt="Read search icon" id="search-icon">
+        <input
+            type="search"
+            name="search"
+            id="todo-search"
+            class="focus-default"
+            placeholder="Search To-dos..."
+            v-model="searchQuery"
+        >
+      </div>
       <p class="completed-percentage">{{ todoListStore.completedPercentage }}%</p>
     </div>
     <div class="list-items">
-      <div v-for="todo in todoListStore.todoList" class="todo-container">
+      <div
+          v-for="todo in filteredTodos"
+          class="todo-container">
         <input type="checkbox" :name="'done-checkbox-' + todo.id" :id="'done-checkbox-' + todo.id"
                :checked="todo.completed"
                @change="todoListStore.toggleCompleted(todo.id)">
         <div class="todo-left-wrapper">
-          <h4 class="todo-title">{{ todo.title }}</h4>
-          <p v-if="todo.creator !== ''" class="todo-creator">{{ todo.creator }}</p>
-          <p v-if="todo.content !== ''" class="todo-content">{{ todo.content }}</p>
+          <EditableTitle v-model="todo.title"/>
+          <p v-if="todo.creator" class="todo-creator">{{ todo.creator }}</p>
+          <EditableContent v-if="todo.content" v-model="todo.content"/>
         </div>
         <div class="todo-middle-wrapper">
-          <select :name="'todo-category-' + todo.id" :id="'todo-category-' + todo.id">
+          <select v-model="todo.category" :name="'todo-category-' + todo.id" :id="'todo-category-' + todo.id">
             <option value="Arbeit" :selected="todo.category === 'Arbeit'">Arbeit</option>
             <option value="Bürokratie" :selected="todo.category === 'Bürokratie'">Bürokratie</option>
             <option value="Einkaufen" :selected="todo.category === 'Einkaufen'">Einkaufen</option>
@@ -37,14 +46,25 @@
   </div>
 </template>
 
+
 <script setup>
 import {useTodoListStore} from "@/stores/todo-list.js";
-import {Color, getPriorityText} from "@/priority.js";
-import {ref, watch, inject} from "vue";
+import {Color, getPriorityText, resolvePriority} from "@/priority.js";
+import {ref, watch, inject, computed} from "vue";
+import EditableTitle from "@/components/EditableTitle.vue";
+import EditableContent from "@/components/EditableContent.vue";
 
 const todoListStore = useTodoListStore();
-
 const editTodoFunction = inject('editTodoFunction');
+const searchQuery = ref('');
+
+const filteredTodos = computed(() => {
+  const query = searchQuery.value.toLowerCase().trim();
+  if (!query) return todoListStore.todoList;
+  return todoListStore.todoList.filter(todo =>
+      `${todo.title};${todo.category};${todo.creator};${getPriorityText(todo.priority)}`.toLowerCase().includes(query)
+  );
+});
 
 let color = ref(getColor(todoListStore.completedPercentage));
 
@@ -85,7 +105,7 @@ function getColor(completedPercentage) {
     display: flex;
     justify-content: space-between;
 
-    form {
+    .search-form {
       display: flex;
       align-items: center;
       gap: 1rem;
@@ -108,13 +128,7 @@ function getColor(completedPercentage) {
         }
       }
 
-      button {
-        background-color: transparent;
-        outline: none;
-        border: none;
-        background-image: url("../assets/img/search.svg");
-        background-repeat: no-repeat;
-        background-size: contain;
+      img {
         width: 2rem;
         height: 2rem;
       }
@@ -168,12 +182,6 @@ function getColor(completedPercentage) {
         display: flex;
         flex-direction: column;
 
-        .todo-title {
-          margin: 0;
-
-          font-size: 1.5rem;
-          line-height: 1.5rem;
-        }
 
         .todo-creator {
           margin: 0;
@@ -182,12 +190,6 @@ function getColor(completedPercentage) {
           line-height: 0.7rem;
 
           color: $color-gray;
-        }
-
-        .todo-content {
-          margin: 0.3rem 0 0;
-
-          line-height: 1rem;
         }
       }
 

@@ -6,6 +6,7 @@ export const useTodoListStore = defineStore('todoList', () => {
         {
             id: 1,
             title: "Title 1",
+            creator: "Tim",
             category: "Arbeit",
             priority: "1",
             start: "2024-11-02",
