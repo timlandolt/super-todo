@@ -1,20 +1,27 @@
 import {defineStore} from 'pinia';
-import {ref, watch} from 'vue';
+import {computed, ref, watch} from 'vue';
 
 export const useTodoListStore = defineStore('todoList', () => {
     const todoList = ref([]);
 
-    let completedPercentage = ref(100);
-    watch(todoList, () => {
-        let absoluteCompletedValue = todoList.value.filter(todo => todo.completed).length;
+    const completedPercentage = computed(() => {
+        const absoluteCompletedValue = todoList.value.filter(todo => todo.completed).length;
         if (absoluteCompletedValue !== 0) {
-            completedPercentage.value = Math.round(absoluteCompletedValue * 100 / todoList.value.length);
+            return Math.round(absoluteCompletedValue * 100 / todoList.value.length);
         } else if (todoList.value.length > 0) {
-            completedPercentage.value = 0;
+            return 0;
         } else {
-            completedPercentage.value = 100;
+            return 100;
         }
     });
+
+
+    function toggleCompleted(id) {
+        const todo = todoList.value.find(todo => todo.id === id);
+        if (todo) {
+            todo.completed = !todo.completed;
+        }
+    }
 
     function addTodo(todo) {
         todo.id = getNextId();
@@ -33,5 +40,5 @@ export const useTodoListStore = defineStore('todoList', () => {
         return largestId + 1;
     }
 
-    return {todoList, addTodo, deleteTodo, completedPercentage};
+    return {todoList, completedPercentage, addTodo, deleteTodo, toggleCompleted};
 });

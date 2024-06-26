@@ -9,7 +9,9 @@
     </div>
     <div class="list-items">
       <div v-for="todo in todoListStore.todoList" class="todo-container">
-        <input type="checkbox" :name="'done-checkbox-' + todo.id" :id="'done-checkbox-' + todo.id">
+        <input type="checkbox" :name="'done-checkbox-' + todo.id" :id="'done-checkbox-' + todo.id"
+               :checked="todo.completed"
+               @change="todoListStore.toggleCompleted(todo.id)">
         <div class="todo-left-wrapper">
           <h4 class="todo-title">{{ todo.title }}</h4>
           <p v-if="todo.creator !== ''" class="todo-creator">{{ todo.creator }}</p>
@@ -36,7 +38,6 @@
 </template>
 
 <script setup>
-
 import {useTodoListStore} from "@/stores/todo-list.js";
 import {Color, getPriorityText} from "@/priority.js";
 import {ref, watch, inject} from "vue";
@@ -45,15 +46,14 @@ const todoListStore = useTodoListStore();
 
 const editTodoFunction = inject('editTodoFunction');
 
-let completedPercentage = todoListStore.completedPercentage;
-let color = ref(getColor(completedPercentage));
+let color = ref(getColor(todoListStore.completedPercentage));
 
-watch([todoListStore.todoList], () => {
-  color.value = getColor(completedPercentage);
+watch(() => todoListStore.completedPercentage, (newVal) => {
+  color.value = getColor(newVal);
 });
 
 function formatStartAndEndDate(startDate, endDate) {
-  let formattedEndDate = (endDate) ? "<br>- " + formatDate(endDate) : "";
+  let formattedEndDate = endDate ? "<br>- " + formatDate(endDate) : "";
   return formatDate(startDate) + formattedEndDate;
 }
 
@@ -64,7 +64,6 @@ function formatDate(date) {
 }
 
 function getColor(completedPercentage) {
-
   if (completedPercentage < 50) {
     return Color.Accent.RED;
   } else if (completedPercentage < 75) {
@@ -73,8 +72,8 @@ function getColor(completedPercentage) {
     return Color.Accent.GREEN;
   }
 }
-
 </script>
+
 
 <style scoped lang="scss">
 @import "../assets/scss/_variables.scss";
