@@ -1,25 +1,24 @@
-<script>
+<template>
+  <Logo/>
+  <main>
+    <ListContainer/>
+    <AddContainer/>
+  </main>
+</template>
+
+<script setup>
+import { provide, ref } from 'vue';
 import Logo from "@/components/Logo.vue";
 import ListContainer from "@/components/ListContainer.vue";
 import AddContainer from "@/components/AddContainer.vue";
 
-export default {
-  name: 'app',
-  components: {AddContainer, ListContainer, Logo},
-  created() {
-    document.title = "Super ToDo";
-    document.getElementsByTagName("html")[0].lang = "de";
-  }
-}
-</script>
+const editTodoFunction = ref(() => {});
 
-<template>
-  <Logo/>
-  <main>
-    <ListContainer />
-    <AddContainer />
-  </main>
-</template>
+provide('editTodoFunction', editTodoFunction);
+
+document.title = "Super ToDo";
+document.getElementsByTagName("html")[0].lang = "de";
+</script>
 
 <style scoped lang="scss">
 @import "assets/scss/_variables.scss";
@@ -30,7 +29,7 @@ main {
   gap: 6rem;
   margin-inline: 10%;
 
-  @media screen and (max-width: 1550px){
+  @media screen and (max-width: 1550px) {
     flex-direction: column;
     align-items: center;
   }

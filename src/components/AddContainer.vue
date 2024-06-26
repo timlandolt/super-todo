@@ -12,8 +12,11 @@
                 rows="3"></textarea>
       <select name="todo-category" v-model="todoCategoryField" id="todo-category" required>
         <option selected disabled class="invisible" value="">Kategorie *</option>
-        <option value="helo">Helo</option>
-        <option value="world">World</option>
+        <option value="Arbeit">Arbeit</option>
+        <option value="Bürokratie">Bürokratie</option>
+        <option value="Einkaufen">Einkaufen</option>
+        <option value="Familie">Familie</option>
+        <option value="Sport">Sport</option>
       </select>
       <div class="priority-wrapper">
         <div class="importance-wrapper">
@@ -48,8 +51,14 @@
 
 <script setup>
 import {getPriority, getPriorityColor, getPriorityText} from "@/priority.js";
-import {ref, watch, reactive} from "vue";
+import {ref, watch, reactive, inject, onMounted} from "vue";
 import {useTodoListStore} from "@/stores/todo-list.js";
+
+const editTodoFunction = inject('editTodoFunction');
+
+onMounted(() => {
+  editTodoFunction.value = loadEditTodo;
+})
 
 const todoListStore = useTodoListStore();
 
@@ -80,6 +89,10 @@ watch([todoStartDateField, todoEndDateField], () => {
   let endDate = Date.parse(todoEndDateField.value);
   isLegalDate.value = checkDateLegality(startDate, endDate);
 });
+
+function loadEditTodo(id) {
+  console.log("Edit Todo: " + id);
+}
 
 function onTodoSubmit() {
   addTodoFromCurrentInputBinds();
@@ -115,6 +128,10 @@ function clearTodoForm() {
   todoStartDateField.value = '';
   todoEndDateField.value = '';
 }
+
+defineExpose({
+    loadEditTodo,
+});
 </script>
 
 <style scoped lang="scss">

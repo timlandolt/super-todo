@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia';
-import { ref, watch } from 'vue';
+import {defineStore} from 'pinia';
+import {ref, watch} from 'vue';
 
 export const useTodoListStore = defineStore('todoList', () => {
     const todoList = ref([]);
@@ -17,8 +17,21 @@ export const useTodoListStore = defineStore('todoList', () => {
     });
 
     function addTodo(todo) {
+        todo.id = getNextId();
         todoList.value.push(todo);
     }
 
-    return { todoList, addTodo, completedPercentage };
+    function deleteTodo(id) {
+        todoList.value = todoList.value.filter(todo => todo.id !== id);
+    }
+
+    function getNextId() {
+        let largestId = 0;
+        todoList.value.forEach(todo => {
+            if (todo.id > largestId) largestId = todo.id;
+        });
+        return largestId + 1;
+    }
+
+    return {todoList, addTodo, deleteTodo, completedPercentage};
 });
