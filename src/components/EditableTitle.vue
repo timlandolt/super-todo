@@ -1,33 +1,36 @@
 <template>
   <div class="editable-title">
     <h4 v-if="!isEditing">{{ title }}</h4>
-    <input v-else type="text" v-model="editableTitle" @keyup.enter="saveEdit" ref="inputElement"/>
-    <button @click="toggleEdit" :class="isEditing ? 'save-button': 'edit-button'"></button>
+    <input v-else type="text" maxlength="255" v-model="editableTitle" @keyup.enter="saveEdit" ref="inputElement"/>
+    <button @click="toggleEdit">
+      <img v-if="isEditing" src="../assets/img/check_gray.svg" alt="Check mark">
+      <img v-else src="../assets/img/edit.svg" alt="Edit icon">
+    </button>
   </div>
 </template>
 
 <script setup>
-import {ref, watch, nextTick} from 'vue';
-import {defineProps, defineEmits} from 'vue';
+import {ref, watch, nextTick} from "vue";
+import {defineProps, defineEmits} from "vue";
 
 const props = defineProps({
   modelValue: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(["update:modelValue"]);
 
 const isEditing = ref(false);
 const title = ref(props.modelValue);
 const editableTitle = ref(props.modelValue);
 const inputElement = ref(null);
 
-const toggleEdit = () => {
+function toggleEdit() {
   isEditing.value = !isEditing.value;
   if (isEditing.value) {
-    // Focus the input element when entering edit mode
+    // Focus the input field in edit mode
     nextTick(() => {
       inputElement.value.focus();
     });
@@ -36,9 +39,9 @@ const toggleEdit = () => {
   }
 };
 
-const saveEdit = () => {
+function saveEdit() {
   title.value = editableTitle.value;
-  emit('update:modelValue', title.value);
+  emit("update:modelValue", title.value);
   isEditing.value = false;
 };
 
@@ -63,6 +66,7 @@ watch(() => props.modelValue, (newValue) => {
 
     font-size: 1.5rem;
     line-height: 1.5rem;
+    word-wrap: anywhere;
   }
 
   input {
@@ -81,24 +85,21 @@ watch(() => props.modelValue, (newValue) => {
 
   button {
     appearance: none;
-
     width: 1rem;
     height: 1rem;
     padding: 0;
     border: 0;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     background-color: transparent;
-    background-repeat: no-repeat;
-    background-position: center;
     cursor: pointer;
 
-    &.edit-button {
-      background-image: url("../assets/img/edit.svg");
-    }
-
-    &.save-button {
-      background-image: url("../assets/img/check_gray.svg");
-      background-size: cover;
+    img {
+      width: 1rem;
+      height: 1rem;
     }
   }
 }

@@ -7,17 +7,16 @@
 </template>
 
 <script setup>
-import { provide, ref } from 'vue';
+import {provide, ref} from "vue";
 import Logo from "@/components/Logo.vue";
 import ListContainer from "@/components/ListContainer.vue";
 import AddContainer from "@/components/AddContainer.vue";
 
-const editTodoFunction = ref(() => {});
+const editTodoFunction = ref(() => {
+});
 
-provide('editTodoFunction', editTodoFunction);
+provide("editTodoFunction", editTodoFunction);
 
-document.title = "Super ToDo";
-document.getElementsByTagName("html")[0].lang = "de";
 </script>
 
 <style scoped lang="scss">

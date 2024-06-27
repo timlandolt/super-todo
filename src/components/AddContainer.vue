@@ -4,9 +4,9 @@
     <form id="edit-form" @submit.prevent="onTodoSubmit()">
       <div>
         <input type="text" name="todo-title" v-model="todoTitleField" id="todo-title-input" class="underlined-input"
-               placeholder="To-do Title*" required>
+               placeholder="Todo Titel*" maxlength="255" required>
         <input type="text" name="todo-creator" v-model="todoCreatorField" id="todo-creator-input"
-               class="underlined-input" placeholder="Your Name">
+               class="underlined-input" placeholder="Author">
       </div>
       <textarea name="todo-content" v-model="todoContentField" id="todo-content-input" class="focus-default"
                 rows="3"/>
@@ -54,22 +54,23 @@ import {getPriority, getPriorityColor, getPriorityText, resolvePriority} from "@
 import {ref, watch, reactive, inject, onMounted} from "vue";
 import {useTodoListStore} from "@/stores/todo-list.js";
 
-const editTodoFunction = inject('editTodoFunction');
+const editTodoFunction = inject("editTodoFunction");
 
 onMounted(() => {
   editTodoFunction.value = loadEditTodo;
-})
+});
 
 const todoListStore = useTodoListStore();
 
-const todoTitleField = ref('');
-const todoCreatorField = ref('');
-const todoContentField = ref('');
-const todoCategoryField = ref('');
+// V-mounted fields initialization
+const todoTitleField = ref("");
+const todoCreatorField = ref("");
+const todoContentField = ref("");
+const todoCategoryField = ref("");
 const todoImportanceField = ref(false);
 const todoUrgencyField = ref(false);
-const todoStartDateField = ref('');
-const todoEndDateField = ref('');
+const todoStartDateField = ref("");
+const todoEndDateField = ref("");
 
 // Priority
 const priority = ref(getPriority(todoImportanceField.value, todoUrgencyField.value));
@@ -90,6 +91,20 @@ watch([todoStartDateField, todoEndDateField], () => {
   isLegalDate.value = checkDateLegality(startDate, endDate);
 });
 
+function validateCurrentInputBinds() {
+  return (
+      todoTitleField.value &&
+      todoCategoryField.value &&
+      todoTitleField.value.length <= 255 &&
+      isLegalDate.value &&
+      checkCurrentDateLegality() &&
+      todoCreatorField.value.length <= 20);
+}
+
+function checkCurrentDateLegality() {
+  return !isNaN(Date.parse(todoStartDateField.value)) && (todoEndDateField.value ? !isNaN(Date.parse(todoEndDateField.value)) : true);
+}
+
 function loadEditTodo(id) {
   const todo = todoListStore.todoList.filter(todo => todo.id === id)[0];
   const priority = resolvePriority(todo.priority);
@@ -107,8 +122,10 @@ function loadEditTodo(id) {
 }
 
 function onTodoSubmit() {
-  addTodoFromCurrentInputBinds();
-  clearTodoForm();
+  if (validateCurrentInputBinds()) {
+    addTodoFromCurrentInputBinds();
+    clearTodoForm();
+  } else alert("Fehler: Die angegebenen Daten sind illegal!");
 }
 
 function addTodoFromCurrentInputBinds() {
@@ -122,7 +139,7 @@ function addTodoFromCurrentInputBinds() {
         start: todoStartDateField.value ? todoStartDateField.value : "",
         end: todoEndDateField.value ? todoEndDateField.value : "",
         completed: false,
-      }
+      },
   );
 }
 
@@ -131,14 +148,14 @@ function checkDateLegality(startDate, endDate) {
 }
 
 function clearTodoForm() {
-  todoTitleField.value = '';
-  todoCreatorField.value = '';
-  todoContentField.value = '';
-  todoCategoryField.value = '';
+  todoTitleField.value = "";
+  todoCreatorField.value = "";
+  todoContentField.value = "";
+  todoCategoryField.value = "";
   todoImportanceField.value = false;
   todoUrgencyField.value = false;
-  todoStartDateField.value = '';
-  todoEndDateField.value = '';
+  todoStartDateField.value = "";
+  todoEndDateField.value = "";
 }
 
 

@@ -38,8 +38,12 @@
         </div>
         <p v-html="formatStartAndEndDate(todo.start, todo.end)" class="todo-date"></p>
         <div class="button-wrapper">
-          <button @click="todoListStore.deleteTodo(todo.id)" class="todo-delete-button"></button>
-          <button @click="editTodoFunction(todo.id)" class="todo-edit-button"></button>
+          <button @click="todoListStore.deleteTodo(todo.id)" class="todo-delete-button">
+            <img src="../assets/img/delete.svg" alt="Trashcan icon">
+          </button>
+          <button @click="editTodoFunction(todo.id)" class="todo-edit-button">
+            <img src="../assets/img/edit.svg" alt="Edit icon">
+          </button>
         </div>
       </div>
     </div>
@@ -55,16 +59,18 @@ import EditableTitle from "@/components/EditableTitle.vue";
 import EditableContent from "@/components/EditableContent.vue";
 
 const todoListStore = useTodoListStore();
-const editTodoFunction = inject('editTodoFunction');
-const searchQuery = ref('');
+const editTodoFunction = inject("editTodoFunction");
+const searchQuery = ref("");
 
 const filteredTodos = computed(() => {
   const query = searchQuery.value.toLowerCase().trim();
   if (!query) return todoListStore.todoList;
   return todoListStore.todoList.filter(todo =>
-      `${todo.title};${todo.category};${todo.creator};${getPriorityText(todo.priority)}`.toLowerCase().includes(query)
+      `${todo.title};${todo.category};${todo.creator};${getPriorityText(todo.priority)}`.toLowerCase().includes(query),
   );
 });
+
+// Percentage color handling
 
 let color = ref(getColor(todoListStore.completedPercentage));
 
@@ -269,25 +275,22 @@ function getColor(completedPercentage) {
 
         button {
           appearance: none;
-
           width: 1rem;
           height: 1rem;
           padding: 0;
-          border: none;
+          border: 0;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
 
           background-color: transparent;
           cursor: pointer;
 
-          background-repeat: no-repeat;
-          background-position: center;
-        }
-
-        .todo-delete-button {
-          background-image: url("../assets/img/delete.svg");
-        }
-
-        .todo-edit-button {
-          background-image: url("../assets/img/edit.svg");
+          img {
+            width: 1rem;
+            height: 1rem;
+          }
         }
 
       }

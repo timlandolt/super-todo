@@ -1,3 +1,15 @@
+// Functions and methods for handling the priority as well as colors
+
+// Object to make working with priority integers easier
+export const Priority = {
+    SOFORT_ERLEDIGEN: "3",
+    EINPLANEN_UND_WOHLFUEHLEN: "2",
+    GIB_ES_AB: "1",
+    WEG_DAMIT: "0",
+};
+
+
+// Convert into priority
 export function getPriority(important, urgent) {
     if (important && urgent) return Priority.SOFORT_ERLEDIGEN;
     if (important && !urgent) return Priority.EINPLANEN_UND_WOHLFUEHLEN;
@@ -5,6 +17,7 @@ export function getPriority(important, urgent) {
     if (!important && !urgent) return Priority.WEG_DAMIT;
 }
 
+// Convert priority into object containing the importance and the urgency
 export function resolvePriority(priority) {
     switch (priority) {
         case Priority.SOFORT_ERLEDIGEN:
@@ -18,8 +31,8 @@ export function resolvePriority(priority) {
     }
 }
 
+// Get displaytext from priority integer
 export function getPriorityText(priority) {
-
     switch (priority) {
         case Priority.SOFORT_ERLEDIGEN:
             return "Sofort erledigen";
@@ -31,6 +44,16 @@ export function getPriorityText(priority) {
             return "Weg damit";
     }
 }
+
+// Color handling
+
+export const Color = {
+    Accent: {
+        GREEN: "#81B29A",
+        YELLOW: "#F2CC8F",
+        RED: "#E07A5F",
+    },
+};
 
 export function getPriorityColor(priority) {
     switch (priority) {
@@ -45,19 +68,4 @@ export function getPriorityColor(priority) {
     }
 
 }
-
-export const Priority = {
-    SOFORT_ERLEDIGEN: '3',
-    EINPLANEN_UND_WOHLFUEHLEN: '2',
-    GIB_ES_AB: '1',
-    WEG_DAMIT: '0'
-};
-
-export const Color = {
-    Accent: {
-        GREEN: "#81B29A",
-        YELLOW: "#F2CC8F",
-        RED: "#E07A5F"
-    }
-};
 

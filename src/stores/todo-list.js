@@ -1,26 +1,11 @@
-import {defineStore} from 'pinia';
-import {computed, ref, watch} from 'vue';
+import {defineStore} from "pinia";
+import {computed, ref, watch} from "vue";
 
-export const useTodoListStore = defineStore('todoList', () => {
-    const todoList = ref([
-        {
-            id: 1,
-            title: "Title 1",
-            creator: "Tim",
-            category: "Arbeit",
-            priority: "1",
-            start: "2024-11-02",
-            completed: false,
-        },
-        {
-            id: 2,
-            title: "Title 2",
-            category: "Sport",
-            priority: "3",
-            start: "2024-11-11",
-            completed: false,
-        },]);
+// Pinia store to share data and functions between components
+export const useTodoListStore = defineStore("todoList", () => {
+    const todoList = ref([]);
 
+    // Calculate completed percentage
     const completedPercentage = computed(() => {
         const absoluteCompletedValue = todoList.value.filter(todo => todo.completed).length;
         if (absoluteCompletedValue !== 0) {
