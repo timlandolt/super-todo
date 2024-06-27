@@ -66,7 +66,7 @@ const filteredTodos = computed(() => {
   const query = searchQuery.value.toLowerCase().trim();
   if (!query) return todoListStore.todoList;
   return todoListStore.todoList.filter(todo =>
-      `${todo.title};${todo.category};${todo.creator};${getPriorityText(todo.priority)}`.toLowerCase().includes(query),
+      `${todo.title};${todo.content};${todo.category};${todo.creator};${getPriorityText(todo.priority)}`.toLowerCase().includes(query),
   );
 });
 
